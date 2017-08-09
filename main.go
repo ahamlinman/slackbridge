@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
 type slackbridgeConfig struct {
 	APIToken string
 	Channel  string
+	Exec     []string
 }
 
 func main() {
@@ -17,9 +17,17 @@ func main() {
 	sls := newSlackLineStreamer(config.APIToken, config.Channel)
 	defer sls.Close()
 
-	for line := range sls.ReceiveChan() {
-		fmt.Printf("got line: %s\n", line)
-		sls.Send("ed is the\n*standard*\ntext editor")
+	els := newExecLineStreamer(config.Exec)
+	defer els.Close()
+
+	for {
+		select {
+		case line := <-sls.ReceiveChan():
+			els.Send(line)
+
+		case line := <-els.ReceiveChan():
+			sls.Send(line)
+		}
 	}
 }
 
