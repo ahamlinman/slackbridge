@@ -1,31 +1,39 @@
 package main
 
 import (
-	"log"
-	"os"
-
-	"github.com/nlopes/slack"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 )
 
+type slackbridgeConfig struct {
+	APIToken string
+	Channel  string
+}
+
 func main() {
-	var slackToken string
-	var ok bool
-	if slackToken, ok = os.LookupEnv("SLACK_API_TOKEN"); !ok {
-		panic("SLACK_API_TOKEN not defined")
+	config := getConfig("./config.json")
+
+	sls := newSlackLineStreamer(config.APIToken, config.Channel)
+	defer sls.Close()
+
+	for line := range sls.ReceiveChan() {
+		fmt.Printf("got line: %s\n", line)
+		sls.Send("ed is the\n*standard*\ntext editor")
+	}
+}
+
+func getConfig(filename string) slackbridgeConfig {
+	configJSON, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
 	}
 
-	// Totally copying the example for now
-
-	api := slack.New(slackToken)
-
-	logger := log.New(os.Stdout, "slackbridge: ", 0)
-	slack.SetLogger(logger)
-	api.SetDebug(true)
-
-	rtm := api.NewRTM()
-	go rtm.ManageConnection()
-
-	for msg := range rtm.IncomingEvents {
-		logger.Println(msg)
+	var config slackbridgeConfig
+	err = json.Unmarshal(configJSON, &config)
+	if err != nil {
+		panic(err)
 	}
+
+	return config
 }
