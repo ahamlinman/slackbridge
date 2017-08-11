@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 )
 
 type slackbridgeConfig struct {
@@ -32,13 +32,14 @@ func main() {
 }
 
 func getConfig(filename string) slackbridgeConfig {
-	configJSON, err := ioutil.ReadFile(filename)
+	configFile, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
+	defer configFile.Close()
 
 	var config slackbridgeConfig
-	err = json.Unmarshal(configJSON, &config)
+	err = json.NewDecoder(configFile).Decode(&config)
 	if err != nil {
 		panic(err)
 	}
