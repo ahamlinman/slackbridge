@@ -36,6 +36,19 @@ func newExecLineStreamer(execLine []string) *execLineStreamer {
 		panic(err)
 	}
 
+	// At some point, we need to call Wait in order to clean up the program's
+	// resources after it exits. This is really easy to do in a goroutine though.
+
+	// My thought right now is to replace the stdio pipe setup here with my own
+	// custom pipes (disconnected from exec.Cmd), and have a goroutine that
+	// re-spawns the program as necessary, probably with new pipes. Still need to
+	// figure out how I can do that in a way that keeps the lineStream working
+	// properly.
+
+	// I probably need to separate out the lineStream from all of the command
+	// execution stuff. Just rebuild some kind of command struct as necessary and
+	// keep passing a single lineStream to it.
+
 	els := &execLineStreamer{
 		cmd:        cmd,
 		stdin:      stdin,

@@ -10,10 +10,7 @@ editor) and pretty much use that program via Slack.
 ### TODOs
 
 * Clean up execLineStreamer
+  - Automatically re-spawn the program on exit
   - Better error handling
-  - Handle the case of the program exiting
-* General architectural and code style points: I wrote this in a matter of a
-  few hours over an evening (including time spent setting up Slack and learning
-  its API), and frankly my mind was a bit dead so I totally stumbled through
-  the whole thing. I'm not sure how great this "LineStreamer" concept really
-  is. Like, maybe I should just make everything a ReadWriter?
+* Fix processing of last Slack message on startup (seems that Slack or the
+  library I'm using tries to treat that message as new, which I don't want)
