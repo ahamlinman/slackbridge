@@ -60,9 +60,8 @@ func (s *execLineStreamer) ReceiveChan() <-chan string {
 }
 
 func (s *execLineStreamer) Send(text string) {
-	// Yes, this is probably super inefficient. And it ignores errors.
-	s.stdin.Write([]byte(text))
-	s.stdin.Write([]byte{'\n'})
+	// This ignores errors. Still need to figure out how to deal with that.
+	s.stdin.Write(append([]byte(text), byte('\n')))
 }
 
 func (s *execLineStreamer) Close() error {
