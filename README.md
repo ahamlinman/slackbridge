@@ -1,5 +1,7 @@
 # slackbridge
 
+[![GoDoc](https://godoc.org/gitlab.alexhamlin.co/go/slackbridge?status.svg)](https://godoc.org/gitlab.alexhamlin.co/go/slackbridge)
+
 **slackbridge** connects a Slack channel to the standard I/O streams of an
 executable program on a server. This is accomplished by implementing real-time
 Slack communication behind Go's [io.ReadWriter] interface, and connecting the
@@ -36,3 +38,4 @@ output is line-buffered.
 * Every line emitted by the executable becomes an individual Slack message. I
   want to "debounce" these and try to group them together more nicely, so large
   output is transmitted more efficiently.
+* Usage documentation and examples should be moved entirely to GoDoc.
