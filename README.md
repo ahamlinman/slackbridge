@@ -12,30 +12,23 @@ result directly to an [exec.Cmd].
 
 ## Setup
 
-For the time being, slackbridge requires a `config.json` file in the working
-directory with the following fields:
+You must have an API token for slackbridge to connect. The most natural way to
+run slackbridge is as a bot user, which can be created through your team's
+"Custom Integrations" page. The resulting token must be provided through the
+`SLACK_TOKEN` environment variable.
 
-* `APIToken`: A Slack API token, likely for a bot user
-* `Channel`: The "internal" ID of a single Slack channel (can be obtained from
-  the URL path when using Slack in a web browser)
+slackbridge filters messages to a single channel using its ID. This is
+generally a 9-character identifier that is separate from the channel name, and
+can be obtained from the URL path when viewing Slack in a web browser.
 
-With this created, run slackbridge with the command line of the desired
-executable, e.g. `slackbridge cat` to create an echo server. All input and
-output is line-buffered.
-
-## Examples
-
-* `slackbridge cat`: echo server
-* `slackbridge ed`: collaborative line editing
-* `slackbridge sudo bash`: yep, this actually works
+See the linked GoDoc above for full usage information and examples.
 
 ## TODOs
 
-* Configuration should not be in a JSON file. My plan is to improve argument
-  parsing so that the channel ID can be specified on the command line, possibly
-  by name with automatic lookup. The API token will be an environment variable
-  so as not to end up in shell history or ps output.
 * Every line emitted by the executable becomes an individual Slack message. I
   want to "debounce" these and try to group them together more nicely, so large
   output is transmitted more efficiently.
-* Usage documentation and examples should be moved entirely to GoDoc.
+
+## License
+
+MIT (see LICENSE.txt)

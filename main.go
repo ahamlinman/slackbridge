@@ -1,7 +1,8 @@
 package main
 
 import (
-	"encoding/json"
+	"flag"
+	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -10,20 +11,48 @@ import (
 	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 )
 
-type slackbridgeConfig struct {
-	APIToken string
-	Channel  string
+var (
+	slackChannel string
+	showUsage    bool
+)
+
+func init() {
+	flag.StringVar(&slackChannel, "channel", "", "Slack channel ID (required)")
+	flag.BoolVar(&showUsage, "help", false, "Show usage information")
+
+	flag.Usage = printUsage
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		panic("an executable must be specified on the command line")
+	flag.Parse()
+
+	if showUsage {
+		flag.Usage()
+		return
 	}
 
-	config := getConfig("./config.json")
-	slackIO := slackio.New(config.APIToken, config.Channel)
+	apiToken := os.Getenv("SLACK_TOKEN")
+	if apiToken == "" {
+		fmt.Fprintln(os.Stderr, "required env var not provided: SLACK_TOKEN")
+		flag.Usage()
+		os.Exit(222)
+	}
 
-	cmd := exec.Command(os.Args[1], os.Args[2:]...)
+	if slackChannel == "" {
+		fmt.Fprintln(os.Stderr, "required flag not provided: -channel")
+		flag.Usage()
+		os.Exit(222)
+	}
+
+	if flag.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "required arguments not provided: [program]")
+		flag.Usage()
+		os.Exit(222)
+	}
+
+	slackIO := slackio.New(apiToken, slackChannel)
+
+	cmd := exec.Command(flag.Args()[0], flag.Args()[1:]...)
 	cmd.Stdin = slackIO
 	cmd.Stdout = slackIO
 	cmd.Stderr = slackIO
@@ -50,18 +79,15 @@ func require(f func() error) {
 	}
 }
 
-func getConfig(filename string) slackbridgeConfig {
-	configFile, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer configFile.Close()
+func printUsage() {
+	fmt.Fprintln(os.Stderr, `slackbridge connects executable programs to Slack channels
 
-	var config slackbridgeConfig
-	err = json.NewDecoder(configFile).Decode(&config)
-	if err != nil {
-		panic(err)
-	}
+Usage
 
-	return config
+  slackbridge [flags] [program] [arguments...]
+
+Flags
+`)
+
+	flag.PrintDefaults()
 }

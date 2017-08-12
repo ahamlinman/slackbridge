@@ -20,12 +20,22 @@ way. Only the text in the main body of the channel is available.
 
 Usage
 
-	slackbridge [executable] [arguments ...]
+	slackbridge [flags] [program] [arguments...]
+
+The SLACK_TOKEN environment variable must be set to a valid Slack API token.
+
+Flags
+
+	-channel string
+		Slack channel ID (required)
+	-help
+		Show usage information
 
 Examples
 
-	slackbridge cat		# simple echo server
-	slackbridge ed -r	# run the "ed" line editor in restricted mode
+	slackbridge -channel C12345678 cat		# simple echo server
+	slackbridge -channel DABCDEFGH ed -r		# run the "ed" line editor in restricted mode
+	slackbridge -channel DANGEROUS sudo bash	# when you want to live on the edge
 
 */
 package main
