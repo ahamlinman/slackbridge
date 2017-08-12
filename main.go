@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"os/signal"
+	"syscall"
 
 	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 )
@@ -26,7 +28,13 @@ func main() {
 	cmd.Stdout = slackIO
 	cmd.Stderr = slackIO
 
-	cmd.Run()
+	if err := cmd.Start(); err != nil {
+		panic(err)
+	}
+
+	sigchld := make(chan os.Signal)
+	signal.Notify(sigchld, syscall.SIGCHLD)
+	<-sigchld
 }
 
 func getConfig(filename string) slackbridgeConfig {
