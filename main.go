@@ -28,6 +28,12 @@ func main() {
 
 	require(cmd.Start)
 
+	// We want slackbridge to terminate when its child program exits. However,
+	// cmd maintains an internal goroutine that copies from Stdin, and the call
+	// to Wait blocks on its completion. So before we call Wait we have to shut
+	// down slackIO to trigger an EOF on Read. But of course we need the child to
+	// exit first! Blocking on SIGCHLD is semi-hackish but does the job.
+
 	sigchld := make(chan os.Signal)
 	signal.Notify(sigchld, syscall.SIGCHLD)
 	<-sigchld
