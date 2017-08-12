@@ -20,21 +20,26 @@ func main() {
 	config := getConfig("./config.json")
 
 	slackIO := slackio.New(config.APIToken, config.Channel)
-	defer slackIO.Close()
 
 	cmd := exec.Command(config.Exec[0], config.Exec[1:]...)
-
 	cmd.Stdin = slackIO
 	cmd.Stdout = slackIO
 	cmd.Stderr = slackIO
 
-	if err := cmd.Start(); err != nil {
-		panic(err)
-	}
+	require(cmd.Start)
 
 	sigchld := make(chan os.Signal)
 	signal.Notify(sigchld, syscall.SIGCHLD)
 	<-sigchld
+
+	require(slackIO.Close)
+	require(cmd.Wait)
+}
+
+func require(f func() error) {
+	if err := f(); err != nil {
+		panic(err)
+	}
 }
 
 func getConfig(filename string) slackbridgeConfig {
