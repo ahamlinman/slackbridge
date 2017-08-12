@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"os/exec"
+
+	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 )
 
 type slackbridgeConfig struct {
@@ -14,21 +17,16 @@ type slackbridgeConfig struct {
 func main() {
 	config := getConfig("./config.json")
 
-	sls := newSlackLineStreamer(config.APIToken, config.Channel)
-	defer sls.Close()
+	slackIO := slackio.New(config.APIToken, config.Channel)
+	defer slackIO.Close()
 
-	els := newExecLineStreamer(config.Exec)
-	defer els.Close()
+	cmd := exec.Command(config.Exec[0], config.Exec[1:]...)
 
-	for {
-		select {
-		case line := <-sls.ReceiveChan():
-			els.Send(line)
+	cmd.Stdin = slackIO
+	cmd.Stdout = slackIO
+	cmd.Stderr = slackIO
 
-		case line := <-els.ReceiveChan():
-			sls.Send(line)
-		}
-	}
+	cmd.Run()
 }
 
 func getConfig(filename string) slackbridgeConfig {
