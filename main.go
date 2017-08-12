@@ -13,15 +13,17 @@ import (
 type slackbridgeConfig struct {
 	APIToken string
 	Channel  string
-	Exec     []string
 }
 
 func main() {
-	config := getConfig("./config.json")
+	if len(os.Args) < 2 {
+		panic("an executable must be specified on the command line")
+	}
 
+	config := getConfig("./config.json")
 	slackIO := slackio.New(config.APIToken, config.Channel)
 
-	cmd := exec.Command(config.Exec[0], config.Exec[1:]...)
+	cmd := exec.Command(os.Args[1], os.Args[2:]...)
 	cmd.Stdin = slackIO
 	cmd.Stdout = slackIO
 	cmd.Stderr = slackIO
