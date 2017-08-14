@@ -12,8 +12,8 @@ channel as individual messages.
 When reading, individual messages are delimited by newlines. Multi-line
 messages are equivalent to multiple single-line messages in succession.
 
-When writing, each line is sent as a separate message. No "batching" of
-multiple writes is performed.
+When writing, lines of output written within a 0.1 second interval are batched
+into a single Slack message.
 
 Users, reactions, threads, and other Slack features are not represented in any
 way. Only the text in the main body of the channel is available.

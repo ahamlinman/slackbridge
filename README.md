@@ -23,12 +23,6 @@ can be obtained from the URL path when viewing Slack in a web browser.
 
 See the linked GoDoc above for full usage information and examples.
 
-## TODOs
-
-* Every line emitted by the executable becomes an individual Slack message. I
-  want to "debounce" these and try to group them together more nicely, so large
-  output is transmitted more efficiently.
-
 ## License
 
 MIT (see LICENSE.txt)
