@@ -50,7 +50,10 @@ func main() {
 		os.Exit(222)
 	}
 
-	slackIO := slackio.New(apiToken, slackChannel)
+	slackIO := &slackio.Client{
+		APIToken:       apiToken,
+		SlackChannelID: slackChannel,
+	}
 
 	cmd := exec.Command(flag.Args()[0], flag.Args()[1:]...)
 	cmd.Stdin = slackIO
