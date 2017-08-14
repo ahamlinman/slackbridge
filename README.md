@@ -23,6 +23,11 @@ can be obtained from the URL path when viewing Slack in a web browser.
 
 See the linked GoDoc above for full usage information and examples.
 
+## Status and Stability
+
+As of 2017-08-13, command slackbridge and package slackio are in active
+development. APIs are not guaranteed to be stable.
+
 ## License
 
 MIT (see LICENSE.txt)
