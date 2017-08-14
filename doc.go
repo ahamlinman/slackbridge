@@ -37,5 +37,13 @@ Examples
 	slackbridge -channel DABCDEFGH ed -r		# run the "ed" line editor in restricted mode
 	slackbridge -channel DANGEROUS sudo bash	# when you want to live on the edge
 
+Caveats
+
+slackbridge is designed for long-running programs. Extremely short programs
+(e.g. a single echo statement) are not guaranteed to work as expected, and
+issues encountered with slackbridge while running such programs will not be
+considered bugs. Excessive runs of short programs with slackbridge will likely
+trigger Slack's rate limiting.
+
 */
 package main
