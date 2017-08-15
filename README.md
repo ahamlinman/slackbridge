@@ -11,23 +11,22 @@ and from lines of text on standard I/O streams. It is powered by the
 
 ## Setup
 
-You must have an API token for slackbridge to connect. The most natural way to
-run slackbridge is as a bot user, which can be created through your team's
-"Custom Integrations" page. The resulting token must be provided through the
-`SLACK_TOKEN` environment variable.
-
-When connecting to a single channel, slackbridge requires a channel ID. This is
-generally a 9-character identifier that is **not** the channel name. It can be
-obtained from the URL path when viewing Slack in a web browser.
+To use slackbridge, you must obtain a Slack API token and make it available
+through the `SLACK_TOKEN` environment variable. All subcommands also require
+a 9-character channel ID, which can be obtained from the URL path when viewing
+Slack in a browser. This is _not_ the same as the channel name.
 
 ## Usage
 
-slackbridge's only current execution mode is to run a child process and connect
-a Slack channel to its standard input and output streams. Other modes of
-execution will be supported in the future.
+slackbridge supports the following capabilities:
+
+* `slackbridge exec`: Run a child process and connect its standard streams to a
+  Slack channel
+* `slackbridge stream`: Stream messages from a channel to standard output
 
 Run `slackbridge help` for full usage information. Also, see the linked GoDoc
-above for more information about how communication via slackbridge works.
+for information on the slackbridge communication model (i.e. how Slack messages
+are converted to and from plain text).
 
 ## Development
 
