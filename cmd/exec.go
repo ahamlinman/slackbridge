@@ -47,10 +47,8 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	slackIO := &slackio.ReadWriter{
-		APIToken:       apiToken,
-		SlackChannelID: slackChannel,
-	}
+	client := &slackio.Client{APIToken: apiToken}
+	slackIO := &slackio.ReadWriter{Client: client, SlackChannelID: slackChannel}
 
 	child := exec.Command(args[0], args[1:]...)
 	child.Stdin = slackIO
@@ -72,6 +70,10 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	<-sigchld
 
 	if err = slackIO.Close(); err != nil {
+		panic(err)
+	}
+
+	if err = client.Close(); err != nil {
 		panic(err)
 	}
 

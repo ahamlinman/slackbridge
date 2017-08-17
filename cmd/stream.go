@@ -39,10 +39,10 @@ func runStreamCmd(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	slackIO := &slackio.ReadWriter{
-		APIToken:       apiToken,
-		SlackChannelID: slackChannel,
-	}
+	client := &slackio.Client{APIToken: apiToken}
+	defer client.Close()
+
+	slackIO := &slackio.ReadWriter{Client: client, SlackChannelID: slackChannel}
 	defer slackIO.Close()
 
 	if _, err := io.Copy(os.Stdout, slackIO); err != nil {
