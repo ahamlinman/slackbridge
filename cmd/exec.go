@@ -48,16 +48,21 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	}
 
 	client := &slackio.Client{APIToken: apiToken}
-	slackIO := &slackio.ReadWriter{Client: client, SlackChannelID: slackChannel}
+	reader := &slackio.Reader{Client: client, SlackChannelID: slackChannel}
+	writer := &slackio.Writer{Client: client, SlackChannelID: slackChannel}
 
 	child := exec.Command(args[0], args[1:]...)
-	child.Stdin = slackIO
-	child.Stdout = slackIO
-	child.Stderr = slackIO
+	child.Stdin = reader
+	child.Stdout = writer
+	child.Stderr = writer
 
-	if err = child.Start(); err != nil {
-		panic(err)
+	ensure := func(fn func() error) {
+		if err := fn(); err != nil {
+			panic(err)
+		}
 	}
+
+	ensure(child.Start)
 
 	// We want exec to terminate when its child program exits. However, child
 	// maintains an internal goroutine that copies from Stdin, and the call to
@@ -69,15 +74,8 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	signal.Notify(sigchld, syscall.SIGCHLD)
 	<-sigchld
 
-	if err = slackIO.Close(); err != nil {
-		panic(err)
-	}
-
-	if err = client.Close(); err != nil {
-		panic(err)
-	}
-
-	if err = child.Wait(); err != nil {
-		panic(err)
-	}
+	ensure(writer.Close)
+	ensure(reader.Close)
+	ensure(client.Close)
+	ensure(child.Wait)
 }
