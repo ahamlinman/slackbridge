@@ -5,9 +5,10 @@
 **slackbridge connects your command line to Slack** by transforming messages to
 and from lines of text on standard I/O streams. It is powered by the
 **slackio** package, which implements real-time Slack communication behind Go's
-[io.ReadWriter] interface.
+[io.Reader] and [io.Writer] interfaces.
 
-[io.ReadWriter]: https://golang.org/pkg/io/#ReadWriter
+[io.Reader]: https://golang.org/pkg/io/#Reader
+[io.Writer]: https://golang.org/pkg/io/#Writer
 
 ## Setup
 
