@@ -13,7 +13,7 @@ import (
 )
 
 var execCmd = &cobra.Command{
-	Use:     "exec [flags] -- [program] [args]",
+	Use:     "exec [flags] -- program [args]",
 	Example: "exec -c C12345678 -- cat  # echo server",
 	Short:   "connect a program's standard streams to a single Slack channel",
 	Long: `exec runs a provided executable program and connects its standard
