@@ -13,14 +13,17 @@ import (
 var streamCmd = &cobra.Command{
 	Use:   "stream",
 	Short: "stream the output of a single Slack channel to stdout",
-	Long: `stream connects to Slack and continuously streams the main body of a
-single channel (i.e. excluding threads) to standard output.`,
+	Long: `stream connects to Slack and continuously streams the main body of one
+or more channels (i.e. excluding threads) to standard output. By default, the
+text of all of the user's channels will be streamed together with no
+identification of any message's originating channel. If desired, output can be
+filtered to a single channel.`,
 	Run: runStreamCmd,
 }
 
 func init() {
 	RootCmd.AddCommand(streamCmd)
-	streamCmd.Flags().StringP("channel", "c", "", "ID of the channel to connect to (required)")
+	streamCmd.Flags().StringP("channel", "c", "", "only output messages from the provided channel ID")
 	streamCmd.MarkFlagRequired("channel")
 }
 
@@ -32,12 +35,7 @@ func runStreamCmd(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	slackChannel, err := cmd.Flags().GetString("channel")
-	if err != nil || slackChannel == "" {
-		fmt.Fprintln(os.Stderr, "Error: requires --channel flag")
-		fmt.Fprintln(os.Stderr, cmd.UsageString())
-		os.Exit(1)
-	}
+	slackChannel, _ := cmd.Flags().GetString("channel")
 
 	client := &slackio.Client{APIToken: apiToken}
 	defer client.Close()
