@@ -7,11 +7,9 @@ before_script:
     mkdir -p "__GOPATH/src/gitlab.alexhamlin.co/$CI_PROJECT_NAMESPACE" &&
     ln -s "$(pwd)" "__GOPATH/src/gitlab.alexhamlin.co/$CI_PROJECT_PATH"
   - export GOPATH="$(pwd)/__GOPATH"
-  - go get -u github.com/golang/dep/cmd/dep
 
 test:
   stage: test
   script:
     - 'go version'
-    - 'dep ensure'
     - 'go test gitlab.alexhamlin.co/$CI_PROJECT_PATH/slackio -cover -timeout 10s'
