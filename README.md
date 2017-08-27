@@ -32,9 +32,11 @@ are converted to and from plain text).
 ## Development
 
 1. `git clone https://gitlab.alexhamlin.co/go/slackbridge.git`
-1. `go get -u github.com/golang/dep/cmd/dep`
-1. `dep ensure`
 1. `go run`, `go build`, `go install`, etc.
+
+Dependencies are managed with [`dep`] and committed to source control.
+
+[`dep`]: https://github.com/golang/dep
 
 ## Status and Stability
 
