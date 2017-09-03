@@ -37,7 +37,7 @@ func runStreamCmd(cmd *cobra.Command, args []string) {
 
 	slackChannel, _ := cmd.Flags().GetString("channel")
 
-	client := &slackio.Client{APIToken: apiToken}
+	client := slackio.NewClient(apiToken)
 	defer client.Close()
 
 	slackIO := &slackio.Reader{Client: client, SlackChannelID: slackChannel}
