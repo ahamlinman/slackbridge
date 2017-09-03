@@ -48,7 +48,7 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	}
 
 	client := slackio.NewClient(apiToken)
-	reader := &slackio.Reader{Client: client, SlackChannelID: slackChannel}
+	reader := slackio.NewReader(client, slackChannel)
 	writer := &slackio.Writer{Client: client, SlackChannelID: slackChannel}
 
 	child := exec.Command(args[0], args[1:]...)
