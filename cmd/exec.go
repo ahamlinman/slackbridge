@@ -15,8 +15,8 @@ import (
 var execCmd = &cobra.Command{
 	Use:     "exec [flags] -- program [args]",
 	Example: "exec -c C12345678 -- cat  # echo server",
-	Short:   "connect a program's standard streams to a single Slack channel",
-	Long: `exec runs a provided executable program and connects its standard
+	Short:   "Connect a program's standard streams to a single Slack channel",
+	Long: `Exec runs a provided executable program and connects its standard
 input, output, and error streams to a single Slack channel. In this mode,
 text from the main body of the channel (i.e. excluding threads) is received
 by the executable on stdin. Text emitted on stdout and stderr is batched over

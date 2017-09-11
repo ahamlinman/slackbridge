@@ -12,8 +12,8 @@ import (
 
 var streamCmd = &cobra.Command{
 	Use:   "stream",
-	Short: "stream the output of a single Slack channel to stdout",
-	Long: `stream connects to Slack and continuously streams the main body of one
+	Short: "Stream one or more Slack channels to stdout",
+	Long: `Stream connects to Slack and continuously streams the main body of one
 or more channels (i.e. excluding threads) to standard output. By default, the
 text of all of the user's channels will be streamed together with no
 identification of any message's originating channel. If desired, output can be
@@ -24,7 +24,6 @@ filtered to a single channel.`,
 func init() {
 	RootCmd.AddCommand(streamCmd)
 	streamCmd.Flags().StringP("channel", "c", "", "only output messages from the provided channel ID")
-	streamCmd.MarkFlagRequired("channel")
 }
 
 func runStreamCmd(cmd *cobra.Command, args []string) {
