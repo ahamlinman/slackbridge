@@ -23,145 +23,119 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"sync"
 )
 
 // Process is the type for a child process managed by package childproc.
 type Process struct {
 	process *os.Process
 
-	readerCloser io.Closer
-	writerCloser io.Closer
+	reader io.Closer
+	writer io.Closer
 
-	childInRead   *os.File // reference kept to drain pipe after child exit
-	childInWrite  *os.File
-	childOutRead  *os.File
-	childOutWrite *os.File
+	childStdinIn   *os.File
+	childStdinOut  *os.File // yes, we reference this, see below
+	childStdoutOut *os.File
 
-	shutdownOnce sync.Once
-	err          error
+	stdinErr  chan error
+	stdoutErr chan error
 }
 
 // Spawn starts a child process from the given command line (name + arguments)
 // whose standard streams are connected to the provided io.ReadCloser and
-// io.WriteCloser. After the child process terminates (either on its own or
-// through explicit action from the caller) the provided ReadCloser and
-// WriteCloser will be closed.
-func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (*Process, error) {
-	p := &Process{
-		readerCloser: stdin,
-		writerCloser: stdouterr,
-	}
-
+// io.WriteCloser. If the child process is started successfully, the provided
+// ReadCloser and WriteCloser will be closed after it terminates.
+func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (proc *Process, err error) {
 	// Look up based on $PATH, just like package exec
 	path, err := exec.LookPath(cmdline[0])
 	if err != nil {
-		return nil, fmt.Errorf("childproc lookup failed: %v", err)
+		err = fmt.Errorf("childproc lookup failed: %v", err)
+		return
 	}
 
-	if err := p.populateIOStreams(); err != nil {
-		return nil, fmt.Errorf("chlidproc setup failed: %v", err)
+	proc = &Process{
+		stdinErr:  make(chan error),
+		stdoutErr: make(chan error),
 	}
 
-	attr := &os.ProcAttr{
-		Files: []*os.File{p.childInWrite, p.childOutRead, p.childOutRead},
-	}
-
-	proc, err := os.StartProcess(path, cmdline[1:], attr)
+	// Create OS pipes for standard streams
+	// First, for the child's stdin
+	proc.childStdinOut, proc.childStdinIn, err = os.Pipe()
 	if err != nil {
-		// TODO close stuff
-		return nil, fmt.Errorf("childproc start failed: %v", err)
+		err = fmt.Errorf("childproc pipe creation failed: %v", err)
+		return
 	}
-
-	p.process = proc
-	return p, nil
-}
-
-func (p *Process) populateIOStreams() error {
-	// TODO stop leaking fds, but make it clean
-
-	childInRead, childInWrite, err := os.Pipe()
-	if err != nil {
-		return err
-	}
-
-	childOutRead, childOutWrite, err := os.Pipe()
-	if err != nil {
-		return err
-	}
-
-	p.childInRead, p.childInWrite = childInRead, childInWrite
-	p.childOutRead, p.childOutWrite = childOutRead, childOutWrite
-	return nil
-}
-
-// Close terminates this child process if it has not yet terminated on its own.
-// It also returns any error encountered as a result of running and/or
-// terminating the process.
-func (p *Process) Close() error {
-	p.shutdown(true)
-	return p.err
-}
-
-// closeAllIO shuts down all I/O streams referenced by this Process, including
-// the Reader and Writer provided when spawning as well as all internal pipes.
-func (p *Process) closeAllIO() error {
-	var err error
-
-	// 1. Close the input Reader, so it will return EOF and copies out of it will
-	// terminate.
-	if p.readerCloser != nil {
-		err = p.readerCloser.Close()
-	}
-
-	// 2. Close our connection to the child's stdin, draining the output to
-	// prevent EPIPEs (kind of dumb?)
-	if p.childInRead != nil {
-		done := make(chan struct{})
-		go func() {
-			// TODO assign this to err?
-			io.Copy(ioutil.Discard, p.childInRead)
-			close(done)
-		}()
-
-		err = p.childInWrite.Close()
-		<-done // TODO also wait for goroutine?
-		err = p.childInRead.Close()
-		p.childInWrite, p.childInRead = nil, nil
-	}
-
-	if p.childOutWrite != nil {
-		err = p.childOutWrite.Close()
-		// TODO wait for goroutine to terminate
-		err = p.writerCloser.Close()
-	}
-
-	return err
-}
-
-// shutdown rolls up logic that should only run once when a child process
-// terminates. kill determines whether the process will be explicitly killed if
-// it has not terminated on its own already.
-func (p *Process) shutdown(kill bool) {
-	p.shutdownOnce.Do(func() {
-		if kill {
-			// TODO kill
-			// this goes into the sync.Once instead of Close, because if the process
-			// has already terminated on its own we don't want to try killing it
+	defer func() {
+		if err != nil {
+			// Ignoring further errors...
+			proc.childStdinIn.Close()
+			proc.childStdinOut.Close()
 		}
+	}()
 
-		// TODO implement for real
+	// Second, for the child's stdout
+	var childStdoutIn *os.File
+	proc.childStdoutOut, childStdoutIn, err = os.Pipe()
+	if err != nil {
+		err = fmt.Errorf("childproc pipe creation failed: %v", err)
+		return
+	}
+	defer func() {
+		if err != nil {
+			// Again, ignoring further errors...
+			childStdoutIn.Close()
+			proc.childStdoutOut.Close()
+		}
+	}()
 
-		// 1. the process terminates (above)
+	// Start the real child process
+	attrs := &os.ProcAttr{
+		Files: []*os.File{proc.childStdinOut, childStdoutIn, childStdoutIn},
+	}
+	proc.process, err = os.StartProcess(path, cmdline[1:], attrs)
+	if err != nil {
+		err = fmt.Errorf("childproc start failed: %v", err)
+		return
+	}
 
-		// 2. close io.Reader, stops io.Copy
-		// 2a. drain child stdin? to be fair we will get an EPIPE if we don't
-		// (meaning we have to reimplement per-OS os/exec logic)
-		// (but yes we also need to retain a reference to the fd in this case)
-		// 3. close os.Pipe write side (child stdin)
+	childStdoutIn.Close()
 
-		// 4. close os.Pipe read side (child stdout/err), stops io.Copy with nil err
-		// 5. close io.Writer
-		// (behavior of pipe read close: https://play.golang.org/p/tq8QVRLKug)
-	})
+	// Spawn copy goroutines for the provided reader and writer
+	// Very, very manual. Much less fancy than package exec.
+	// First, from the reader to the child stdin
+	go func() {
+		_, copyErr := io.Copy(proc.childStdinIn, stdin)
+		proc.childStdinIn.Close()
+		proc.stdinErr <- copyErr
+	}()
+
+	// Second, from the child stdout to the writer
+	go func() {
+		_, copyErr := io.Copy(stdouterr, proc.childStdoutOut)
+		stdouterr.Close()
+		proc.stdoutErr <- copyErr
+	}()
+
+	return
+}
+
+func (p *Process) Wait() error {
+	// Wait on the process and get any errors from it
+	_, err := p.process.Wait()
+
+	// Shut down the reader, to stop its copy goroutine with EOF
+	err = p.reader.Close()
+	// Drain the rest of the child's stdin pipe to ioutil.Discard
+	_, err = io.Copy(ioutil.Discard, p.childStdinOut)
+	// Obtain the error result from the copy goroutine
+	err = <-p.stdinErr
+	// Shut down our reference to the stdin read fd
+	err = p.childStdinOut.Close()
+
+	// Obtain the error result from the copy goroutine (child closure shuts down)
+	err = <-p.stdoutErr
+	// Shut down our read end of the child pipe, since it gets no more data
+	err = p.childStdoutOut.Close()
+
+	// Somehow return whatever error makes the most sense
+	return err
 }
