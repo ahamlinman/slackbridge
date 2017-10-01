@@ -32,8 +32,7 @@ type Process struct {
 	reader io.Closer
 	writer io.Closer
 
-	childStdinOut  *os.File // yes, we reference this, see below
-	childStdoutOut *os.File
+	childStdinOut *os.File // yes, we reference this, see below
 
 	stdinErr  chan error
 	stdoutErr chan error
@@ -73,8 +72,7 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 	}()
 
 	// Second, for the child's stdout
-	var childStdoutIn *os.File
-	proc.childStdoutOut, childStdoutIn, err = os.Pipe()
+	childStdoutOut, childStdoutIn, err := os.Pipe()
 	if err != nil {
 		err = fmt.Errorf("childproc pipe creation failed: %v", err)
 		return
@@ -83,7 +81,7 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 		if err != nil {
 			// Again, ignoring further errors...
 			childStdoutIn.Close()
-			proc.childStdoutOut.Close()
+			childStdoutOut.Close()
 		}
 	}()
 
@@ -110,7 +108,8 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 
 	// Second, from the child stdout to the writer
 	go func() {
-		_, copyErr := io.Copy(stdouterr, proc.childStdoutOut)
+		_, copyErr := io.Copy(stdouterr, childStdoutOut)
+		childStdoutOut.Close()
 		stdouterr.Close()
 		proc.stdoutErr <- copyErr
 	}()
@@ -143,7 +142,6 @@ func (p *Process) Wait() error {
 	// termination of the child process will EOF the output side and let that
 	// goroutine stop.
 	err = <-p.stdoutErr
-	err = p.childStdoutOut.Close()
 
 	// TODO Leverage go-multierror for this
 	return err
