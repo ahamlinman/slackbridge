@@ -32,7 +32,6 @@ type Process struct {
 	reader io.Closer
 	writer io.Closer
 
-	childStdinIn   *os.File
 	childStdinOut  *os.File // yes, we reference this, see below
 	childStdoutOut *os.File
 
@@ -59,7 +58,8 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 
 	// Create OS pipes for standard streams
 	// First, for the child's stdin
-	proc.childStdinOut, proc.childStdinIn, err = os.Pipe()
+	var childStdinIn *os.File
+	proc.childStdinOut, childStdinIn, err = os.Pipe()
 	if err != nil {
 		err = fmt.Errorf("childproc pipe creation failed: %v", err)
 		return
@@ -67,7 +67,7 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 	defer func() {
 		if err != nil {
 			// Ignoring further errors...
-			proc.childStdinIn.Close()
+			childStdinIn.Close()
 			proc.childStdinOut.Close()
 		}
 	}()
@@ -103,8 +103,8 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 	// Very, very manual. Much less fancy than package exec.
 	// First, from the reader to the child stdin
 	go func() {
-		_, copyErr := io.Copy(proc.childStdinIn, stdin)
-		proc.childStdinIn.Close()
+		_, copyErr := io.Copy(childStdinIn, stdin)
+		childStdinIn.Close()
 		proc.stdinErr <- copyErr
 	}()
 
