@@ -122,20 +122,29 @@ func (p *Process) Wait() error {
 	// Wait on the process and get any errors from it
 	_, err := p.process.Wait()
 
-	// Shut down the reader, to stop its copy goroutine with EOF
+	// Close the Reader that feeds the input pipe to the child
 	err = p.reader.Close()
-	// Drain the rest of the child's stdin pipe to ioutil.Discard
+
+	// A goroutine feeds the Reader's output to the child's stdin through a pipe.
+	// Because that goroutine could block on writing to the pipe, we drain the
+	// output side of in the pipe ourselves. This drain operation will finish
+	// when the goroutine closes the input side of the pipe, allowing us to
+	// collect any error emitted by the goroutine.
+	//
+	// This setup is not ideal, since we need to keep a reference to the output
+	// side of the stdin pipe. If we handled EPIPE in a cross-platform way like
+	// package exec, slackbridge could spawn twice as many processes without
+	// hitting limits on open files.
 	_, err = io.Copy(ioutil.Discard, p.childStdinOut)
-	// Obtain the error result from the copy goroutine
 	err = <-p.stdinErr
-	// Shut down our reference to the stdin read fd
 	err = p.childStdinOut.Close()
 
-	// Obtain the error result from the copy goroutine (child closure shuts down)
+	// We do *not* keep a reference to the input side of the stdout pipe, so
+	// termination of the child process will EOF the output side and let that
+	// goroutine stop.
 	err = <-p.stdoutErr
-	// Shut down our read end of the child pipe, since it gets no more data
 	err = p.childStdoutOut.Close()
 
-	// Somehow return whatever error makes the most sense
+	// TODO Leverage go-multierror for this
 	return err
 }
