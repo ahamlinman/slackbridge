@@ -23,6 +23,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"sync"
 )
 
 // Process is the type for a child process managed by package childproc.
@@ -34,8 +35,10 @@ type Process struct {
 
 	childStdinOut *os.File // yes, we reference this, see below
 
-	stdinErr  chan error
-	stdoutErr chan error
+	shutdownOnce sync.Once
+	stdinErrCh   chan error
+	stdoutErrCh  chan error
+	err          error
 }
 
 // Spawn starts a child process from the given command line (name + arguments)
@@ -51,8 +54,8 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 	}
 
 	proc = &Process{
-		stdinErr:  make(chan error),
-		stdoutErr: make(chan error),
+		stdinErrCh:  make(chan error),
+		stdoutErrCh: make(chan error),
 	}
 
 	// Create OS pipes for standard streams
@@ -103,7 +106,7 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 	go func() {
 		_, copyErr := io.Copy(childStdinIn, stdin)
 		childStdinIn.Close()
-		proc.stdinErr <- copyErr
+		proc.stdinErrCh <- copyErr
 	}()
 
 	// Second, from the child stdout to the writer
@@ -111,38 +114,48 @@ func Spawn(cmdline []string, stdin io.ReadCloser, stdouterr io.WriteCloser) (pro
 		_, copyErr := io.Copy(stdouterr, childStdoutOut)
 		childStdoutOut.Close()
 		stdouterr.Close()
-		proc.stdoutErr <- copyErr
+		proc.stdoutErrCh <- copyErr
 	}()
+
+	go proc.wait()
 
 	return
 }
 
 func (p *Process) Wait() error {
-	// Wait on the process and get any errors from it
-	_, err := p.process.Wait()
+	return p.wait()
+}
 
-	// Close the Reader that feeds the input pipe to the child
-	err = p.reader.Close()
+func (p *Process) wait() error {
+	p.shutdownOnce.Do(func() {
+		// Wait on the process and get any errors from it
+		_, err := p.process.Wait()
 
-	// A goroutine feeds the Reader's output to the child's stdin through a pipe.
-	// Because that goroutine could block on writing to the pipe, we drain the
-	// output side of in the pipe ourselves. This drain operation will finish
-	// when the goroutine closes the input side of the pipe, allowing us to
-	// collect any error emitted by the goroutine.
-	//
-	// This setup is not ideal, since we need to keep a reference to the output
-	// side of the stdin pipe. If we handled EPIPE in a cross-platform way like
-	// package exec, slackbridge could spawn twice as many processes without
-	// hitting limits on open files.
-	_, err = io.Copy(ioutil.Discard, p.childStdinOut)
-	err = <-p.stdinErr
-	err = p.childStdinOut.Close()
+		// Close the Reader that feeds the input pipe to the child
+		err = p.reader.Close()
 
-	// We do *not* keep a reference to the input side of the stdout pipe, so
-	// termination of the child process will EOF the output side and let that
-	// goroutine stop.
-	err = <-p.stdoutErr
+		// A goroutine feeds the Reader's output to the child's stdin through a pipe.
+		// Because that goroutine could block on writing to the pipe, we drain the
+		// output side of in the pipe ourselves. This drain operation will finish
+		// when the goroutine closes the input side of the pipe, allowing us to
+		// collect any error emitted by the goroutine.
+		//
+		// This setup is not ideal, since we need to keep a reference to the output
+		// side of the stdin pipe. If we handled EPIPE in a cross-platform way like
+		// package exec, slackbridge could spawn twice as many processes without
+		// hitting limits on open files.
+		_, err = io.Copy(ioutil.Discard, p.childStdinOut)
+		err = <-p.stdinErrCh
+		err = p.childStdinOut.Close()
 
-	// TODO Leverage go-multierror for this
-	return err
+		// We do *not* keep a reference to the input side of the stdout pipe, so
+		// termination of the child process will EOF the output side and let that
+		// goroutine stop. This ensures that we can safely shut down the writer.
+		err = <-p.stdoutErrCh
+
+		// TODO Leverage go-multierror for this
+		p.err = err
+	})
+
+	return p.err
 }
