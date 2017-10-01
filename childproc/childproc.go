@@ -24,6 +24,8 @@ import (
 	"os"
 	"os/exec"
 	"sync"
+
+	multierror "github.com/hashicorp/go-multierror"
 )
 
 // Process is the type for a child process managed by package childproc.
@@ -126,8 +128,11 @@ func (p *Process) Wait() error {
 
 func (p *Process) wait() error {
 	p.shutdownOnce.Do(func() {
+		var errs *multierror.Error
+
 		// Wait on the process and get any errors from it
 		_, err := p.process.Wait()
+		errs = multierror.Append(errs, err)
 
 		// A goroutine feeds the Reader's output to the child's stdin through a
 		// pipe. Because that goroutine could block on writing to the pipe, we
@@ -139,18 +144,16 @@ func (p *Process) wait() error {
 		// side of the stdin pipe. If we handled EPIPE in a cross-platform way like
 		// package exec, slackbridge could spawn twice as many processes without
 		// hitting limits on open files.
-		err = p.readerCloser.Close()
+		errs = multierror.Append(errs, p.readerCloser.Close())
 		_, err = io.Copy(ioutil.Discard, p.childStdinOut)
-		err = <-p.stdinErrCh
-		err = p.childStdinOut.Close()
+		errs = multierror.Append(errs, err, <-p.stdinErrCh, p.childStdinOut.Close())
 
 		// We do *not* keep a reference to the input side of the stdout pipe, so
 		// termination of the child process will EOF the output side and let that
 		// goroutine stop. This ensures that we can safely shut down the writer.
-		err = <-p.stdoutErrCh
+		errs = multierror.Append(errs, <-p.stdoutErrCh)
 
-		// TODO Leverage go-multierror for this
-		p.err = err
+		p.err = errs.ErrorOrNil()
 	})
 
 	return p.err
