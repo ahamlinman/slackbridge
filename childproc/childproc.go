@@ -33,7 +33,7 @@ type Process struct {
 	process *os.Process
 
 	readerCloser  io.Closer
-	childStdinOut *os.File // yes, we reference this, see below
+	childStdinOut *os.File
 
 	shutdownOnce sync.Once
 	stdinErrCh   chan error
@@ -49,56 +49,46 @@ func Spawn(cmdline []string, inputReader io.ReadCloser, outputWriter io.WriteClo
 	// Look up based on $PATH, just like package exec
 	path, err := exec.LookPath(cmdline[0])
 	if err != nil {
-		err = fmt.Errorf("childproc lookup failed: %v", err)
-		return
-	}
-
-	proc = &Process{
-		stdinErrCh:  make(chan error),
-		stdoutErrCh: make(chan error),
+		return nil, fmt.Errorf("childproc lookup failed: %v", err)
 	}
 
 	// Create OS pipes for standard streams
 	// First, for the child's stdin
-	var childStdinIn *os.File
-	proc.childStdinOut, childStdinIn, err = os.Pipe()
+	childStdinOut, childStdinIn, err := os.Pipe()
 	if err != nil {
-		err = fmt.Errorf("childproc pipe creation failed: %v", err)
-		return
+		return nil, fmt.Errorf("childproc pipe creation failed: %v", err)
 	}
 	defer func() {
 		if err != nil {
-			// Ignoring further errors...
+			childStdinOut.Close()
 			childStdinIn.Close()
-			proc.childStdinOut.Close()
 		}
 	}()
 
 	// Second, for the child's stdout
 	childStdoutOut, childStdoutIn, err := os.Pipe()
 	if err != nil {
-		err = fmt.Errorf("childproc pipe creation failed: %v", err)
-		return
+		return nil, fmt.Errorf("childproc pipe creation failed: %v", err)
 	}
 	defer func() {
 		if err != nil {
-			// Again, ignoring further errors...
-			childStdoutIn.Close()
 			childStdoutOut.Close()
+			childStdoutIn.Close()
 		}
 	}()
 
 	// Start the real child process
 	attrs := &os.ProcAttr{
-		Files: []*os.File{proc.childStdinOut, childStdoutIn, childStdoutIn},
+		Files: []*os.File{childStdinOut, childStdoutIn, childStdoutIn},
 	}
-	proc.process, err = os.StartProcess(path, cmdline[1:], attrs)
+	process, err := os.StartProcess(path, cmdline[1:], attrs)
 	if err != nil {
-		err = fmt.Errorf("childproc start failed: %v", err)
-		return
+		return nil, fmt.Errorf("childproc start failed: %v", err)
 	}
 
 	childStdoutIn.Close()
+
+	stdinErrCh, stdoutErrCh := make(chan error), make(chan error)
 
 	// Spawn copy goroutines for the provided reader and writer
 	// Very, very manual. Much less fancy than package exec.
@@ -106,7 +96,7 @@ func Spawn(cmdline []string, inputReader io.ReadCloser, outputWriter io.WriteClo
 	go func() {
 		_, copyErr := io.Copy(childStdinIn, inputReader)
 		childStdinIn.Close()
-		proc.stdinErrCh <- copyErr
+		stdinErrCh <- copyErr
 	}()
 
 	// Second, from the child stdout to the writer
@@ -114,19 +104,23 @@ func Spawn(cmdline []string, inputReader io.ReadCloser, outputWriter io.WriteClo
 		_, copyErr := io.Copy(outputWriter, childStdoutOut)
 		childStdoutOut.Close()
 		outputWriter.Close()
-		proc.stdoutErrCh <- copyErr
+		stdoutErrCh <- copyErr
 	}()
 
-	go proc.wait()
+	p := &Process{
+		process:       process,
+		readerCloser:  inputReader,
+		childStdinOut: childStdinOut,
+		stdinErrCh:    stdinErrCh,
+		stdoutErrCh:   stdoutErrCh,
+	}
 
-	return
+	go p.Wait()
+
+	return p, nil
 }
 
 func (p *Process) Wait() error {
-	return p.wait()
-}
-
-func (p *Process) wait() error {
 	p.shutdownOnce.Do(func() {
 		var errs *multierror.Error
 
