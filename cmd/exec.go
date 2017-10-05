@@ -3,10 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"os/signal"
-	"syscall"
 
+	"gitlab.alexhamlin.co/go/slackbridge/childproc"
 	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 
 	"github.com/spf13/cobra"
@@ -51,31 +49,18 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	reader := slackio.NewReader(client, slackChannel)
 	writer := slackio.NewWriter(client, slackChannel, nil)
 
-	child := exec.Command(args[0], args[1:]...)
-	child.Stdin = reader
-	child.Stdout = writer
-	child.Stderr = writer
-
-	ensure := func(fn func() error) {
-		if err := fn(); err != nil {
-			panic(err)
-		}
+	child, err := childproc.Spawn(args, reader, writer)
+	if err != nil {
+		panic(err)
 	}
 
-	ensure(child.Start)
+	// Note that Wait will close reader and writer for us after the child process
+	// terminates
+	if err := child.Wait(); err != nil {
+		panic(err)
+	}
 
-	// We want exec to terminate when its child program exits. However, child
-	// maintains an internal goroutine that copies from Stdin, and the call to
-	// Wait blocks on its completion. So before we call Wait we have to shut down
-	// slackIO to trigger an EOF on Read. But of course we need child to exit
-	// first! Blocking on SIGCHLD is semi-hackish but does the job.
-
-	sigchld := make(chan os.Signal)
-	signal.Notify(sigchld, syscall.SIGCHLD)
-	<-sigchld
-
-	ensure(writer.Close)
-	ensure(reader.Close)
-	ensure(client.Close)
-	ensure(child.Wait)
+	if err := client.Close(); err != nil {
+		panic(err)
+	}
 }
