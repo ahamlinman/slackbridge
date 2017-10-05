@@ -40,7 +40,7 @@ Dependencies are managed with [`dep`] and committed to source control.
 
 ## Status and Stability
 
-As of September 2017, command slackbridge and package slackio are in active
+As of October 2017, command slackbridge and package slackio are in active
 development. APIs are not guaranteed to be stable.
 
 ## License
