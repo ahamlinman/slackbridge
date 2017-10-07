@@ -2,8 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"regexp"
 
 	"github.com/spf13/cobra"
+	"gitlab.alexhamlin.co/go/slackbridge/childproc"
+	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 )
 
 var muxCmd = &cobra.Command{
@@ -30,10 +34,59 @@ associated user's channels.`,
 	Run:  runMuxCmd,
 }
 
+var channelIDTemplate *regexp.Regexp
+
 func init() {
-	// RootCmd.AddCommand(muxCmd)
+	RootCmd.AddCommand(muxCmd)
+
+	channelIDTemplate = regexp.MustCompile(`{{.ChannelID}}`)
 }
 
 func runMuxCmd(cmd *cobra.Command, args []string) {
-	fmt.Println("It works!")
+	apiToken := os.Getenv("SLACK_TOKEN")
+	if apiToken == "" {
+		fmt.Fprintln(os.Stderr, "Error: SLACK_TOKEN environment variable not set")
+		fmt.Fprintln(os.Stderr, RootCmd.UsageString())
+		os.Exit(1)
+	}
+
+	client := slackio.NewClient(apiToken)
+
+	msgs := make(chan slackio.Message)
+	client.Subscribe(msgs)
+
+	spawned := make(map[string]bool)
+
+	for msg := range msgs {
+		if spawned[msg.ChannelID] {
+			continue
+		}
+
+		childArgs := make([]string, len(args))
+		for i, v := range args {
+			childArgs[i] = channelIDTemplate.ReplaceAllString(v, msg.ChannelID)
+		}
+
+		reader := slackio.NewReader(&subscriberAt{client, msg.ID}, msg.ChannelID)
+		writer := slackio.NewWriter(client, msg.ChannelID, nil)
+
+		// TODO Something other than fire-and-forget...
+		childproc.Spawn(childArgs, reader, writer)
+		spawned[msg.ChannelID] = true
+	}
+}
+
+// subscriberAt implements the slackio.ReadClient interface, but starts the
+// subscription at a specified message ID using SubscribeAt.
+type subscriberAt struct {
+	client *slackio.Client
+	id     int
+}
+
+func (s *subscriberAt) Subscribe(ch chan<- slackio.Message) error {
+	return s.client.SubscribeAt(s.id, ch)
+}
+
+func (s *subscriberAt) Unsubscribe(ch chan<- slackio.Message) error {
+	return s.client.Unsubscribe(ch)
 }
