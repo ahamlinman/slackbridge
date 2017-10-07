@@ -11,8 +11,8 @@ import (
 )
 
 var muxCmd = &cobra.Command{
-	Use:     "mux -- program [args]",
-	Example: "mux -- start-child.sh --slack-id {{.ChannelID}}",
+	Use:     "mux [flags] -- program [args]",
+	Example: "mux -- ./start-bot.sh -c {{.ChannelID}}",
 	Short:   "Exec a separate instance of a program per Slack channel",
 	Long: `Mux spawns multiple instances of a provided executable program, where the
 standard input, output, and error streams of each instance are connected to a
