@@ -86,7 +86,7 @@ func Spawn(cmdline []string, inputReader io.ReadCloser, outputWriter io.WriteClo
 	attrs := &os.ProcAttr{
 		Files: []*os.File{childStdinOut, childStdoutIn, childStdoutIn},
 	}
-	process, err := os.StartProcess(path, cmdline[1:], attrs)
+	process, err := os.StartProcess(path, cmdline, attrs)
 	if err != nil {
 		return nil, fmt.Errorf("childproc start failed: %v", err)
 	}
