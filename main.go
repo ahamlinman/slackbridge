@@ -3,14 +3,17 @@
 Command slackbridge connects Slack channels to system I/O streams using Slack's
 real-time messaging API.
 
-Two modes of execution are supported:
+Three modes of execution are supported:
 
 The first runs a child process and connects its standard streams to a Slack
 channel. Within the child process, the text of individual messages in the
 channel is received on stdin. Text emitted on stdout and stderr is sent back to
 the channel as individual messages.
 
-The second connects to Slack and streams message text to stdout. Input is
+The second is similar to the first, but automatically starts a new child
+process for each Slack channel from which a message is received.
+
+The third connects to Slack and streams message text to stdout. Input is
 ignored.
 
 Communication Model

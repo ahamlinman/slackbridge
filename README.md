@@ -22,7 +22,9 @@ Slack in a browser. This is _not_ the same as the channel name.
 slackbridge supports the following capabilities:
 
 * `slackbridge exec`: Run a child process and connect its standard streams to a
-  Slack channel
+  single Slack channel
+* `slackbridge mux`: Automatically spawn a child process for each Slack channel
+  from which a message is received, with standard streams connected as above
 * `slackbridge stream`: Stream messages from a channel to standard output
 
 Run `slackbridge help` for full usage information. Also, see the linked GoDoc
