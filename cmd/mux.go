@@ -39,7 +39,7 @@ var channelIDTemplate *regexp.Regexp
 func init() {
 	RootCmd.AddCommand(muxCmd)
 
-	channelIDTemplate = regexp.MustCompile(`{{.ChannelID}}`)
+	channelIDTemplate = regexp.MustCompile(`{{\.ChannelID}}`)
 }
 
 func runMuxCmd(cmd *cobra.Command, args []string) {
