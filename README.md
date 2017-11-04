@@ -13,9 +13,9 @@ and from lines of text on standard I/O streams. It is powered by the
 ## Setup
 
 To use slackbridge, you must obtain a Slack API token and make it available
-through the `SLACK_TOKEN` environment variable. All subcommands also require
-a 9-character channel ID, which can be obtained from the URL path when viewing
-Slack in a browser. This is _not_ the same as the channel name.
+through the `SLACK_TOKEN` environment variable. Many subcommands also require a
+9-character channel ID, which can be obtained from the URL path when viewing
+Slack in a browser. This is _not_ the same as the user-visible channel name.
 
 ## Usage
 
@@ -36,7 +36,9 @@ are converted to and from plain text).
 1. `git clone https://gitlab.alexhamlin.co/go/slackbridge.git`
 1. `go run`, `go build`, `go install`, etc.
 
-Dependencies are managed with [`dep`] and committed to source control.
+Dependencies are managed with [`dep`] and committed to source control. (This is
+an unfortunate consequence of my current CI setup. I hope to remove these files
+in the future, as they prevent external consumption of package slackio.)
 
 [`dep`]: https://github.com/golang/dep
 
