@@ -34,11 +34,9 @@ are converted to and from plain text).
 ## Development
 
 1. `git clone https://github.com/ahamlinman/slackbridge.git`
+1. `go get github.com/golang/dep/cmd/dep` (If you don't already have [`dep`])
+1. `dep ensure`
 1. `go run`, `go build`, `go install`, etc.
-
-Dependencies are managed with [`dep`] and committed to source control. (This is
-an unfortunate consequence of my current CI setup. I hope to remove these files
-in the future, as they prevent external consumption of package slackio.)
 
 [`dep`]: https://github.com/golang/dep
 
