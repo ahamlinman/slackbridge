@@ -1,6 +1,6 @@
 # slackbridge
 
-[![GoDoc](https://godoc.org/gitlab.alexhamlin.co/go/slackbridge?status.svg)](https://godoc.org/gitlab.alexhamlin.co/go/slackbridge)
+[![GoDoc](https://godoc.org/github.com/ahamlinman/slackbridge?status.svg)](https://godoc.org/github.com/ahamlinman/slackbridge)
 
 **slackbridge connects your command line to Slack** by transforming messages to
 and from lines of text on standard I/O streams. It is powered by the
@@ -33,7 +33,7 @@ are converted to and from plain text).
 
 ## Development
 
-1. `git clone https://gitlab.alexhamlin.co/go/slackbridge.git`
+1. `git clone https://github.com/ahamlinman/slackbridge.git`
 1. `go run`, `go build`, `go install`, etc.
 
 Dependencies are managed with [`dep`] and committed to source control. (This is

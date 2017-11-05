@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"gitlab.alexhamlin.co/go/slackbridge/slackio"
+	"github.com/ahamlinman/slackbridge/slackio"
 
 	"github.com/spf13/cobra"
 )

@@ -5,9 +5,9 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/ahamlinman/slackbridge/childproc"
+	"github.com/ahamlinman/slackbridge/slackio"
 	"github.com/spf13/cobra"
-	"gitlab.alexhamlin.co/go/slackbridge/childproc"
-	"gitlab.alexhamlin.co/go/slackbridge/slackio"
 )
 
 var muxCmd = &cobra.Command{

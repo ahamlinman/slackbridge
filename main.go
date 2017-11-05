@@ -57,7 +57,7 @@ package main
 import (
 	"os"
 
-	"gitlab.alexhamlin.co/go/slackbridge/cmd"
+	"github.com/ahamlinman/slackbridge/cmd"
 )
 
 func main() {
