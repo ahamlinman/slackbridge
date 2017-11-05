@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ahamlinman/slackbridge/childproc"
+	"github.com/ahamlinman/slackbridge/internal/childproc"
 	"github.com/ahamlinman/slackbridge/slackio"
 	"github.com/spf13/cobra"
 )
