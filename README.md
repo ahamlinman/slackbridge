@@ -48,8 +48,15 @@ package slackio have been implemented. Feature development is on an indefinite
 hiatus, but maintenance updates (e.g. dependency upgrades) may be made from
 time to time.
 
-Although significant API and/or CLI changes are unlikely, a stable version has
-not been declared and long-term backwards compatibility is not guaranteed.
+Until v1.0.0 is tagged (no guarantees on when or if this will happen), this
+project adheres to a form of [Semantic Versioning] as follows:
+
+* MINOR updates could potentially contain breaking changes
+* PATCH updates will not contain breaking changes
+
+All notable changes will be documented in CHANGELOG.md.
+
+[Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## License
 
