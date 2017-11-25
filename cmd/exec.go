@@ -38,10 +38,9 @@ func runExecCmd(cmd *cobra.Command, args []string) {
 	}
 
 	slackChannel, err := cmd.Flags().GetString("channel")
-	if err != nil || slackChannel == "" {
-		fmt.Fprintln(os.Stderr, "Error: requires --channel flag")
-		fmt.Fprintln(os.Stderr, cmd.UsageString())
-		os.Exit(1)
+	if err != nil {
+		// If the flag isn't provided, Cobra already prints a nice message for us
+		panic(err)
 	}
 
 	client := slackio.NewClient(apiToken)
