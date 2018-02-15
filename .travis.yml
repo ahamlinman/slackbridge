@@ -9,4 +9,18 @@ install:
   - dep ensure -v
 
 script:
+  # Test
   - go test ./slackio -cover -timeout 10s -race
+
+  # Build
+  - GOOS=linux GOARCH=amd64 go build -o slackbridge-linux-amd64 .
+
+deploy:
+  provider: releases
+  api_key:
+    secure: hWjLeYFj73Kn0uSHSTBvcrAlPwFzG54X6iy0RzyIpk4VtlWjeY8zNICnQBwxowA3nXyM+Mt6IbD1afjOyAhHTyhQG0m2t0icFWJxV5yd35gdU/FTxb4OsFYVksvVUIw+Pa35SBLUVbRkpKh3CIJe2siHl1Vo3zVFxrQEsdt7cl57vHlrG5WRWpOXIdSdLjxVP7zz34JpWwytrdmgk6A22Wb5U/IyKCE8JcWigu9OTXiUVxIuDW55iIXKuB0idOfx8L3WoWwnaBAulgva1486aanqrslV9ICCXgzs3T/FCkshtdE0VICEYhSGGUqAknQF5GB8W/Ljp7eOPQh4C9han9/sRHJeT8NzG2Bwe6g+qSlzgWbaLxFlYKPjo8CwvDzptzTeqzVY5a9qfB6FeiqBUmjm+uR4ViHN59CwUEmlsh+jM2BnsFm9Bo3QAm/P6MODfMkpWOub4FpI9jLuUhLF+mndi3uyK0kFfKtyMYf109J70hBvUcOZ8OpdKNcofcCR9ItdHsAo1z9yjq/7VTal0ttyeY94URWY0WDbFMRw0Y+B9MTTZsSMye21eshVRPeFi3993n5SFEJMOEs60omVapUDPKxxqwe6l9BHDrDS9WqtFJcd78A1sABJIv5aJnaC7PTGnqt+8siGC2aNS3XvWlFeuwmDMjRshjvvkAQUrP0=
+  file:
+    - slackbridge-linux-amd64
+  skip_cleanup: true
+  on:
+    tags: true
