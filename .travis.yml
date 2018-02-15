@@ -13,7 +13,7 @@ script:
   - go test ./slackio -cover -timeout 10s -race
 
   # Build
-  - GOOS=linux GOARCH=amd64 go build -o slackbridge-linux-amd64 .
+  - GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o slackbridge-linux-amd64 .
 
 deploy:
   provider: releases
