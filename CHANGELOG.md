@@ -13,6 +13,9 @@ project adheres to a form of [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Added
+- `licenses` command to print information about the availability of source code
+  used to build slackbridge
 
 ## [v0.1.0] - 2017-11-24
 ### Added
