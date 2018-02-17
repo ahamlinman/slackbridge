@@ -58,6 +58,18 @@ All notable changes will be documented in CHANGELOG.md.
 
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
-## License
+## License Information
 
-MIT (see LICENSE.txt)
+The source code of slackbridge and the slackio package is made available under
+the terms of the MIT License (see LICENSE.txt).
+
+The pre-compiled slackbridge binaries distributed at
+https://github.com/ahamlinman/slackbridge/releases are built using the
+following libraries from HashiCorp, Inc.:
+
+* https://github.com/hashicorp/go-multierror
+* https://github.com/hashicorp/errwrap
+
+The source code of these libraries is distributed by HashiCorp under the terms
+of the Mozilla Public License, version 2.0. You may obtain the source code for
+these libraries by following the links above.
