@@ -16,6 +16,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 ### Added
 - `licenses` command to print information about the availability of source code
   used to build slackbridge
+- `--version` flag to print the current version of slackbridge (when provided
+  at build time)
 
 ## [v0.1.0] - 2017-11-24
 ### Added
