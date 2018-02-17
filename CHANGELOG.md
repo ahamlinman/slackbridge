@@ -3,8 +3,8 @@
 All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog].
 
-Until v1.0.0 is tagged (no guarantees on when or if this will happen), this
-project adheres to a form of [Semantic Versioning] as follows:
+Until v1.0.0 is tagged (no guarantees about when or if this will happen), this
+project adheres to a scheme based on [Semantic Versioning] as follows:
 
 * MINOR updates could potentially contain breaking changes
 * PATCH updates will not contain breaking changes

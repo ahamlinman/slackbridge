@@ -48,8 +48,8 @@ package slackio have been implemented. Feature development is on an indefinite
 hiatus, but maintenance updates (e.g. dependency upgrades) may be made from
 time to time.
 
-Until v1.0.0 is tagged (no guarantees on when or if this will happen), this
-project adheres to a form of [Semantic Versioning] as follows:
+Until v1.0.0 is tagged (no guarantees about when or if this will happen), this
+project adheres to a scheme based on [Semantic Versioning] as follows:
 
 * MINOR updates could potentially contain breaking changes
 * PATCH updates will not contain breaking changes
