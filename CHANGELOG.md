@@ -19,6 +19,10 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 - `--version` flag to print the current version of slackbridge (when provided
   at build time)
 
+### Security
+- Updated Slack library to open WebSocket connections using HTTPS (see
+  https://github.com/nlopes/slack/pull/208)
+
 ## [v0.1.0] - 2017-11-24
 ### Added
 - Initial versioned release
