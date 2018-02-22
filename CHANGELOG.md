@@ -13,6 +13,9 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Changed
+- CI builds and tests now use Go 1.10
+
 ### Fixed
 - Updated Slack library to prevent panicking on certain WebSocket errors (see
   https://github.com/nlopes/slack/issues/260)
