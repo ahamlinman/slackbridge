@@ -13,6 +13,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+
+## [v0.1.2] - 2018-02-21
 ### Changed
 - CI builds and tests now use Go 1.10
 
@@ -36,6 +38,7 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 - Initial versioned release
 - Changelog for all notable modifications going forward
 
-[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.2...HEAD
+[v0.1.2]: https://github.com/ahamlinman/slackbridge/tree/v0.1.2
 [v0.1.1]: https://github.com/ahamlinman/slackbridge/tree/v0.1.1
 [v0.1.0]: https://github.com/ahamlinman/slackbridge/tree/v0.1.0
