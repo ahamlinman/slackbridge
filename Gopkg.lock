@@ -26,10 +26,10 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/nlopes/slack"
   packages = ["."]
-  revision = "8ab4d0b364ef1e9af5d102531da20d5ec902b6c4"
-  version = "v0.2.0"
+  revision = "b5448397ba5f9e754fa5a27c6cf28480b462bf29"
 
 [[projects]]
   branch = "master"
@@ -46,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "571c9674f468b218b496a41fcd68d18916bfd02f4fde86f1433850593e8e350a"
+  inputs-digest = "b61552ceced28b05bbd159f843b70fefcab27d9b64caef50781961f8b265fa6f"
   solver-name = "gps-cdcl"
   solver-version = 1

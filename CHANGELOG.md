@@ -13,6 +13,9 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Fixed
+- Updated Slack library to prevent panicking on certain WebSocket errors (see
+  https://github.com/nlopes/slack/issues/260)
 
 ## [v0.1.1] - 2018-02-16
 ### Added
