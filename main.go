@@ -27,8 +27,8 @@ is not configurable.
 
 When writing, lines of output written within a 0.1 second interval are batched
 into a single Slack message. This is not configurable through the slackbridge
-CLI, though the underlying slackio implementation allows customization of this
-"batching" scheme.
+CLI (though the underlying slackio package allows customization of this
+"batching" scheme).
 
 Users, reactions, threads, and other Slack features are not represented in any
 way. Only the text in the main body of the channel is available. Received

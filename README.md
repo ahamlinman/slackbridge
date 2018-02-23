@@ -4,10 +4,11 @@
 [![Build Status](https://travis-ci.org/ahamlinman/slackbridge.svg?branch=master)](https://travis-ci.org/ahamlinman/slackbridge)
 
 **slackbridge connects your command line to Slack** by transforming messages to
-and from lines of text on standard I/O streams. It is powered by the
-**slackio** package, which implements real-time Slack communication behind Go's
-[io.Reader] and [io.Writer] interfaces.
+and from lines of text on standard I/O streams. It is powered by the [slackio]
+package, which implements real-time Slack communication behind Go's [io.Reader]
+and [io.Writer] interfaces.
 
+[slackio]: https://github.com/ahamlinman/slackio
 [io.Reader]: https://golang.org/pkg/io/#Reader
 [io.Writer]: https://golang.org/pkg/io/#Writer
 
@@ -43,10 +44,9 @@ are converted to and from plain text).
 
 ## Status and Stability
 
-As of November 2017, the key desired functionalities of command slackbridge and
-package slackio have been implemented. Feature development is on an indefinite
-hiatus, but maintenance updates (e.g. dependency upgrades) may be made from
-time to time.
+As of November 2017, the key desired functionalities of slackbridge have been
+implemented. Feature development is on an indefinite hiatus, but maintenance
+updates (e.g. dependency upgrades) may be made from time to time.
 
 Until v1.0.0 is tagged (no guarantees about when or if this will happen), this
 project adheres to a scheme based on [Semantic Versioning] as follows:
@@ -60,8 +60,8 @@ All notable changes will be documented in CHANGELOG.md.
 
 ## License Information
 
-The source code of slackbridge and the slackio package is made available under
-the terms of the MIT License (see LICENSE.txt).
+The source code of slackbridge is made available under the terms of the MIT
+License (see LICENSE.txt).
 
 The pre-compiled slackbridge binaries distributed at
 https://github.com/ahamlinman/slackbridge/releases are built using the

@@ -17,10 +17,6 @@ vendor Gopkg.lock: $(SRC_FILES) Gopkg.toml
 	dep ensure -v
 	touch vendor
 
-.PHONY: test
-test: vendor
-	go test ./slackio -cover -timeout 10s -race
-
 .PHONY: clean
 clean:
 	rm -f slackbridge-linux-amd64

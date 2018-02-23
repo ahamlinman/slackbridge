@@ -13,6 +13,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Changed
+- Package slackio has moved to https://github.com/ahamlinman/slackio
 
 ## [v0.1.2] - 2018-02-21
 ### Changed

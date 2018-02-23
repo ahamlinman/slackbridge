@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/ahamlinman/slackio"
+  packages = ["."]
+  revision = "fda9df2559c19ebd6fdd91ea259f0806f9971697"
+  version = "v0.1.0"
+
+[[projects]]
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
@@ -46,6 +52,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b61552ceced28b05bbd159f843b70fefcab27d9b64caef50781961f8b265fa6f"
+  inputs-digest = "ce3b514861ca49f1209e6dbdc63735574981c2513850b78ce89f6a1915db4a32"
   solver-name = "gps-cdcl"
   solver-version = 1

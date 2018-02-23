@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/ahamlinman/slackbridge/internal/childproc"
-	"github.com/ahamlinman/slackbridge/slackio"
+	"github.com/ahamlinman/slackio"
 	"github.com/spf13/cobra"
 )
 

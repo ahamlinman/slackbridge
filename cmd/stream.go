@@ -5,8 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/ahamlinman/slackbridge/slackio"
-
+	"github.com/ahamlinman/slackio"
 	"github.com/spf13/cobra"
 )
 
@@ -39,10 +38,10 @@ func runStreamCmd(cmd *cobra.Command, args []string) {
 	client := slackio.NewClient(apiToken)
 	defer client.Close()
 
-	slackIO := slackio.NewReader(client, slackChannel)
-	defer slackIO.Close()
+	reader := slackio.NewReader(client, slackChannel)
+	defer reader.Close()
 
-	if _, err := io.Copy(os.Stdout, slackIO); err != nil {
+	if _, err := io.Copy(os.Stdout, reader); err != nil {
 		panic(err)
 	}
 }
