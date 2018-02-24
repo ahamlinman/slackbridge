@@ -17,7 +17,7 @@ func init() {
 }
 
 func runLicensesCmd(_ *cobra.Command, _ []string) {
-	fmt.Println(`
+	fmt.Print(`
 The source code for slackbridge is available to you under the terms of the MIT
 License, and can be found at the following location:
 
@@ -31,5 +31,6 @@ following locations:
 
   go-multierror: https://github.com/hashicorp/go-multierror
   errwrap: https://github.com/hashicorp/errwrap
+
 `)
 }
