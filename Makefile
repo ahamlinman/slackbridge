@@ -6,16 +6,12 @@ VERSION = $(shell git describe | sed 's/^v//')
 .PHONY: release
 release: slackbridge-linux-amd64
 
-slackbridge-linux-amd64: $(SRC_FILES) vendor
+slackbridge-linux-amd64: $(SRC_FILES)
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
 	go build \
 		-o slackbridge-linux-amd64 \
 		-ldflags "-s -w -X $(IMPORT_PATH)/cmd.Version=$(VERSION)" \
 		.
-
-vendor Gopkg.lock: $(SRC_FILES) Gopkg.toml
-	dep ensure -v
-	touch vendor
 
 .PHONY: clean
 clean:

@@ -36,9 +36,11 @@ are converted to and from plain text).
 ## Development
 
 1. `git clone https://github.com/ahamlinman/slackbridge.git`
-1. `go get github.com/golang/dep/cmd/dep` (If you don't already have [`dep`])
-1. `dep ensure`
 1. `go run`, `go build`, `go install`, etc.
+
+Dependencies are managed using the [`dep`] tool. If you don't already have it,
+run `go get github.com/golang/dep/cmd/dep` to install it. Then run `dep ensure`
+whenever dependencies change. Commit `vendor/` changes to source control.
 
 [`dep`]: https://github.com/golang/dep
 
@@ -60,16 +62,16 @@ All notable changes will be documented in CHANGELOG.md.
 
 ## License Information
 
-The source code of slackbridge is made available under the terms of the MIT
+The source code of slackbridge is distributed under the terms of the MIT
 License (see LICENSE.txt).
 
-The pre-compiled slackbridge binaries distributed at
-https://github.com/ahamlinman/slackbridge/releases are built using the
-following libraries from HashiCorp, Inc.:
+The source code of packages in the `vendor/` directory is distributed under the
+terms of those packages' respective licenses. In particular, the following
+packages are distributed by HashiCorp, Inc. under the terms of the Mozilla
+Public License, version 2.0:
 
-* https://github.com/hashicorp/go-multierror
-* https://github.com/hashicorp/errwrap
+* `vendor/github.com/hashicorp/go-multierror/`
+* `vendor/github.com/hashicorp/errwrap/`
 
-The source code of these libraries is distributed by HashiCorp under the terms
-of the Mozilla Public License, version 2.0. You may obtain the source code for
-these libraries by following the links above.
+A copy of the Mozilla Public License, version 2.0, is available in the LICENSE
+file within each of these subdirectories.

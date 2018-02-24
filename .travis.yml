@@ -2,12 +2,6 @@ language: go
 go:
   - '1.10'
 
-before_install:
-  - go get -u github.com/golang/dep/cmd/dep
-
-install:
-  - dep ensure -v
-
 script:
   - make release
   - ./slackbridge-linux-amd64 --version

@@ -15,6 +15,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 ## [Unreleased]
 ### Changed
 - Package slackio has moved to https://github.com/ahamlinman/slackio
+- All dependencies are now version-controlled to support better reproducibility
+  of builds
 
 ## [v0.1.2] - 2018-02-21
 ### Changed
