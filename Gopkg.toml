@@ -28,9 +28,9 @@
   name = "github.com/spf13/cobra"
   branch = "master"
 
-[[override]]
-  name = "github.com/nlopes/slack"
-  branch = "master"
+[[constraint]]
+  name = "github.com/ahamlinman/slackio"
+  version = "0.1.1"
 
 [prune]
   go-tests = true

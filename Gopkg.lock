@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/ahamlinman/slackio"
   packages = ["."]
-  revision = "fda9df2559c19ebd6fdd91ea259f0806f9971697"
-  version = "v0.1.0"
+  revision = "f2935ec1e6698d2e9ee597df3d6a44f43332ebbb"
+  version = "v0.1.1"
 
 [[projects]]
   name = "github.com/gorilla/websocket"
@@ -32,10 +32,9 @@
   version = "v1.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/nlopes/slack"
   packages = ["."]
-  revision = "b5448397ba5f9e754fa5a27c6cf28480b462bf29"
+  revision = "1217b9d3e4304348a9be15c2afd80ad4691f31e5"
 
 [[projects]]
   branch = "master"
@@ -52,6 +51,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ce3b514861ca49f1209e6dbdc63735574981c2513850b78ce89f6a1915db4a32"
+  inputs-digest = "b16dacc3e1eea771e212c56d2cba054775b0b61ede131b6dfba6bf9b66c40500"
   solver-name = "gps-cdcl"
   solver-version = 1
