@@ -39,13 +39,12 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 - Updated Slack library to open WebSocket connections using HTTPS (see
   https://github.com/nlopes/slack/pull/208)
 
-## [v0.1.0] - 2017-11-24
+## v0.1.0 - 2017-11-24
 ### Added
 - Initial versioned release
 - Changelog for all notable modifications going forward
 
 [Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.3...HEAD
-[v0.1.3]: https://github.com/ahamlinman/slackbridge/tree/v0.1.3
-[v0.1.2]: https://github.com/ahamlinman/slackbridge/tree/v0.1.2
-[v0.1.1]: https://github.com/ahamlinman/slackbridge/tree/v0.1.1
-[v0.1.0]: https://github.com/ahamlinman/slackbridge/tree/v0.1.0
+[v0.1.3]: https://github.com/ahamlinman/slackbridge/compare/v0.1.2...v0.1.3
+[v0.1.2]: https://github.com/ahamlinman/slackbridge/compare/v0.1.1...v0.1.2
+[v0.1.1]: https://github.com/ahamlinman/slackbridge/compare/v0.1.0...v0.1.1
