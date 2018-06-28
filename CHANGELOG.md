@@ -13,6 +13,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+
+## [v0.1.4] - 2018-06-27
 ### Changed
 - Upgraded internal dependencies to the latest versions.
 
@@ -46,7 +48,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 - Initial versioned release
 - Changelog for all notable modifications going forward
 
-[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.4...HEAD
+[v0.1.4]: https://github.com/ahamlinman/slackbridge/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/ahamlinman/slackbridge/compare/v0.1.2...v0.1.3
 [v0.1.2]: https://github.com/ahamlinman/slackbridge/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/ahamlinman/slackbridge/compare/v0.1.0...v0.1.1
