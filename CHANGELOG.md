@@ -13,6 +13,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Changed
+- Upgraded internal dependencies to the latest versions.
 
 ## [v0.1.3] - 2018-02-24
 ### Changed
