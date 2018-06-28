@@ -79,14 +79,10 @@ func runMuxCmd(cmd *cobra.Command, args []string) {
 // subscriberAt implements the slackio.ReadClient interface, but starts the
 // subscription at a specified message ID using SubscribeAt.
 type subscriberAt struct {
-	client *slackio.Client
-	id     int
+	*slackio.Client
+	id int
 }
 
 func (s *subscriberAt) Subscribe(ch chan<- slackio.Message) error {
-	return s.client.SubscribeAt(s.id, ch)
-}
-
-func (s *subscriberAt) Unsubscribe(ch chan<- slackio.Message) error {
-	return s.client.Unsubscribe(ch)
+	return s.SubscribeAt(s.id, ch)
 }
