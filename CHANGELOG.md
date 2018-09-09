@@ -15,6 +15,7 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 ## [Unreleased]
 ### Changed
 - The canonical import path is now `go.alexhamlin.co/slackbridge`.
+- Go modules are now used for dependency management, rather than dep.
 
 ## [v0.1.4] - 2018-06-27
 ### Changed
