@@ -38,11 +38,12 @@ are converted to and from plain text).
 1. `git clone https://github.com/ahamlinman/slackbridge.git`
 1. `go run`, `go build`, `go install`, etc.
 
-Dependencies are managed using the [`dep`] tool. If you don't already have it,
-run `go get github.com/golang/dep/cmd/dep` to install it. Then run `dep ensure`
-whenever dependencies change. Commit `vendor/` changes to source control.
+Dependencies are managed using the (experimental) [Go modules] feature. When
+using Go 1.11+ in module mode, all changes to dependencies will automatically
+be tracked. Whenever changes occur, be sure to run `go mod vendor` and commit
+changes to source control.
 
-[`dep`]: https://github.com/golang/dep
+[Go modules]: https://github.com/golang/go/wiki/Modules
 
 ## Status and Stability
 
