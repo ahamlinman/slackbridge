@@ -1,5 +1,5 @@
 // Package cmd implements the functionality of command slackbridge.
-package cmd
+package cmd // import "go.alexhamlin.co/slackbridge/cmd"
 
 import "github.com/spf13/cobra"
 

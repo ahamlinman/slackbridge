@@ -13,6 +13,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
+### Changed
+- The canonical import path is now `go.alexhamlin.co/slackbridge`.
 
 ## [v0.1.4] - 2018-06-27
 ### Changed

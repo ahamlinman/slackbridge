@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/ahamlinman/slackio"
 	"github.com/spf13/cobra"
+	"go.alexhamlin.co/slackio"
 )
 
 var streamCmd = &cobra.Command{

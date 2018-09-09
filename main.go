@@ -52,12 +52,12 @@ will not be considered bugs. Excessive runs of short programs with slackbridge
 will likely trigger Slack's rate limiting.
 
 */
-package main
+package main // import "go.alexhamlin.co/slackbridge"
 
 import (
 	"os"
 
-	"github.com/ahamlinman/slackbridge/cmd"
+	"go.alexhamlin.co/slackbridge/cmd"
 )
 
 func main() {

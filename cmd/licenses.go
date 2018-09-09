@@ -21,7 +21,7 @@ func runLicensesCmd(_ *cobra.Command, _ []string) {
 The source code for slackbridge is available to you under the terms of the MIT
 License, and can be found at the following location:
 
-  https://github.com/ahamlinman/slackbridge
+  https://go.alexhamlin.co/slackbridge
 
 This release of slackbridge also incorporates code from the go-multierror and
 errwrap libraries distributed by HashiCorp, Inc. under the terms of the Mozilla

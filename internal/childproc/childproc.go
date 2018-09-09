@@ -20,7 +20,7 @@ slackio. This assumption regarding Close behavior is certainly not guaranteed
 for arbitrary readers (e.g. OS pipes).
 
 */
-package childproc
+package childproc // import "go.alexhamlin.co/slackbridge/internal/childproc"
 
 import (
 	"fmt"

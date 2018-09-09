@@ -1,6 +1,6 @@
 SRC_FILES = $(shell find . -name '*.go' -not -path './vendor/*')
 
-IMPORT_PATH = github.com/ahamlinman/slackbridge
+IMPORT_PATH = go.alexhamlin.co/slackbridge
 VERSION = $(shell git describe | sed 's/^v//')
 
 .PHONY: release

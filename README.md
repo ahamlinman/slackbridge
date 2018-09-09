@@ -1,6 +1,6 @@
 # slackbridge
 
-[![GoDoc](https://godoc.org/github.com/ahamlinman/slackbridge?status.svg)](https://godoc.org/github.com/ahamlinman/slackbridge)
+[![GoDoc](https://godoc.org/go.alexhamlin.co/slackbridge?status.svg)](https://godoc.org/go.alexhamlin.co/slackbridge)
 [![Build Status](https://travis-ci.org/ahamlinman/slackbridge.svg?branch=master)](https://travis-ci.org/ahamlinman/slackbridge)
 
 **slackbridge connects your command line to Slack** by transforming messages to
@@ -8,7 +8,7 @@ and from lines of text on standard I/O streams. It is powered by the [slackio]
 package, which implements real-time Slack communication behind Go's [io.Reader]
 and [io.Writer] interfaces.
 
-[slackio]: https://github.com/ahamlinman/slackio
+[slackio]: https://go.alexhamlin.co/slackio
 [io.Reader]: https://golang.org/pkg/io/#Reader
 [io.Writer]: https://golang.org/pkg/io/#Writer
 

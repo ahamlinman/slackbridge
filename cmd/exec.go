@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ahamlinman/slackbridge/internal/childproc"
-	"github.com/ahamlinman/slackio"
 	"github.com/spf13/cobra"
+	"go.alexhamlin.co/slackio"
+
+	"go.alexhamlin.co/slackbridge/internal/childproc"
 )
 
 var execCmd = &cobra.Command{
