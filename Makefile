@@ -7,7 +7,7 @@ VERSION = $(shell git describe | sed 's/^v//')
 release: slackbridge-linux-amd64
 
 slackbridge-linux-amd64: $(SRC_FILES)
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
+	GO111MODULE=on GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
 	go build \
 		-mod vendor \
 		-o slackbridge-linux-amd64 \
