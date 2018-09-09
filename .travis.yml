@@ -1,9 +1,9 @@
 language: go
 go:
-  - '1.10'
+  - '1.11'
 
 script:
-  - make release
+  - env GO111MODULE=on make release
   - ./slackbridge-linux-amd64 --version
 
 deploy:
