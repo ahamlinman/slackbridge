@@ -14,6 +14,10 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 
 ## [Unreleased]
 
+## [v0.1.6] - 2019-02-09
+### Changed
+- Upgraded internal dependencies (including slackio) to the latest versions.
+
 ## [v0.1.5] - 2018-09-09
 ### Changed
 - Internal dependencies are now managed using Go's module system (rather than
@@ -55,7 +59,8 @@ project adheres to a scheme based on [Semantic Versioning] as follows:
 - Initial versioned release
 - Changelog for all notable modifications going forward
 
-[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/ahamlinman/slackbridge/compare/v0.1.6...HEAD
+[v0.1.6]: https://github.com/ahamlinman/slackbridge/compare/v0.1.5...v0.1.6
 [v0.1.5]: https://github.com/ahamlinman/slackbridge/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/ahamlinman/slackbridge/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/ahamlinman/slackbridge/compare/v0.1.2...v0.1.3
