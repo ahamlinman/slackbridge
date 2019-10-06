@@ -47,8 +47,8 @@ changes to source control.
 
 ## Status and Stability
 
-As of November 2017, the key desired functionalities of package slackio have
-been implemented. My main use case for slackio no longer exists, so all
+As of November 2017, the key desired functionalities of slackbridge have been
+implemented. My main use case for slackbridge no longer exists, so all
 development and maintenance is on an indefinite (and possibly permanent)
 hiatus.
 
